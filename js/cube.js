@@ -1,7 +1,9 @@
 // Variables globales
 let area;
 let cube;
+let cube1;
 let acctions = [];
+let mousePos;
 // Área para el proyecto
 let main = document.getElementsByTagName("main")[0];
 area = document.createElement("div");
@@ -15,7 +17,7 @@ main.parentElement.insertBefore(divInfo, main);
 
 // Añadir cuadno el cursor se mueve en el area
 area.addEventListener('mousemove', (event) => {
-	let mousePos = oMousePos(area, event);
+	mousePos = oMousePos(area, event);
 	marcarCoords(divInfo, mousePos.x, mousePos.y);
 });
 // Eliminar cuadno el cursor sale del area
@@ -24,11 +26,11 @@ area.addEventListener("mouseout", function () {
 });
 
 // Seleccionar la posicion del cursor
-function oMousePos(area, evt) {
+function oMousePos(area, event) {
 	var ClientRect = area.getBoundingClientRect();
 	return { //objeto
-		x: Math.round(evt.clientX - ClientRect.left),
-		y: Math.round(evt.clientY - ClientRect.top)
+		x: Math.round(event.clientX - ClientRect.left),
+		y: Math.round(event.clientY - ClientRect.top)
 	}
 }
 
@@ -41,7 +43,6 @@ function marcarCoords(divInfo, x, y) {
 	divInfo.style.margin = "auto";
 	divInfo.style.marginTop = "10px";
 }
-
 // Para limpiar las coordenadas
 function limpiarCoords(divInfo) {
 	divInfo.innerHTML = "";
@@ -54,10 +55,23 @@ cube.style.background = "red";
 cube.style.width = "50px";
 cube.style.height = "50px";
 cube.style.position = "absolute";
-cube.style.top = "100px";
-cube.style.left = "150px";
+cube.style.top = "200px";
+cube.style.left = "200px";
 
 area.appendChild(cube);
+
+let instance = 0;
+area.addEventListener("click", function (event) {
+	cube1 = document.createElement("div");
+	cube1.style.background = cube.style.background;
+	cube1.style.width = "50px";
+	cube1.style.height = "50px";
+	cube1.style.position = "absolute";
+	cube1.style.top = mousePos.y + "px";
+	cube1.style.left = mousePos.x + "px";
+	area.appendChild(cube1);
+});
+
 
 document.addEventListener("keydown", function (event) {
 	console.log(event.code);
@@ -132,7 +146,7 @@ function reduce(cube) {
 	// Eliminamos px del tamaño y multiplicamos por 1 para convertir a numero
 	let increase = cube.style.width.replace('px', '') * 1 - 10;
 	// Comprobando solo un lado sirve al ser un cuadrado.
-	if (increase> 20) { // Tiene en cuenta que si es mejor de 20 px no podemos reudicr mas porque seria el tamaño menos de 10
+	if (increase > 20) { // Tiene en cuenta que si es mejor de 20 px no podemos reudicr mas porque seria el tamaño menos de 10
 		cube.style.width = increase + "px";
 		cube.style.height = increase + "px";
 	}
