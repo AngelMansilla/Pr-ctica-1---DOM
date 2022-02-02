@@ -13,9 +13,40 @@ main.parentElement.insertBefore(area, main);
 let divInfo = document.createElement("div");
 main.parentElement.insertBefore(divInfo, main);
 
-area.addEventListener('mouseenter', (event) =>{
-	// En divInfo tenemos que pegar las coordenadas
-})
+// Añadir cuadno el cursor se mueve en el area
+area.addEventListener('mousemove', (event) => {
+	let mousePos = oMousePos(area, event);
+	marcarCoords(divInfo, mousePos.x, mousePos.y);
+});
+// Eliminar cuadno el cursor sale del area
+area.addEventListener("mouseout", function () {
+	limpiarCoords(divInfo);
+});
+
+// Seleccionar la posicion del cursor
+function oMousePos(area, evt) {
+	var ClientRect = area.getBoundingClientRect();
+	return { //objeto
+		x: Math.round(evt.clientX - ClientRect.left),
+		y: Math.round(evt.clientY - ClientRect.top)
+	}
+}
+
+// Para pintar las cordenadas
+function marcarCoords(divInfo, x, y) {
+	divInfo.innerHTML = ("x: " + x + ", y: " + y);
+	divInfo.style.border = "1px solid #d9d9d9";
+	divInfo.style.width = "105px";
+	divInfo.style.textAlign = "center";
+	divInfo.style.margin = "auto";
+	divInfo.style.marginTop = "10px";
+}
+
+// Para limpiar las coordenadas
+function limpiarCoords(divInfo) {
+	divInfo.innerHTML = "";
+	divInfo.style.backgroundColor = "transparent"
+}
 
 // Pieza que queremos mover
 cube = document.createElement("div");
@@ -45,6 +76,12 @@ document.addEventListener("keydown", function (event) {
 			break;
 		case "KeyC":
 			addAction("color");
+			break;
+		case "BracketRight": // Para la tecla del +
+			addAction("+");
+			break;
+		case "Slash": // Para la tecla del -
+			addAction("-");
 			break;
 		case "Enter":
 			executeAcctions();
@@ -81,6 +118,25 @@ function moveRight(cube) {
 		cube.offsetWidth : left;
 	cube.style.left = left + "px";
 }
+// Aumentamos el tamaño de 10 en 10
+function increase(cube) {
+	// Realizamos solo de un lado porque al ser un cuadrado es igual en ambos ejes
+	// Eliminamos px del tamaño y multiplicamos por 1 para convertir a numero
+	let increase = cube.style.width.replace('px', '') * 1 + 10;
+	cube.style.width = increase + "px";
+	cube.style.height = increase + "px";
+}
+// Reducimos el tamaño de 10 en 10
+function reduce(cube) {
+	// Realizamos solo de un lado porque al ser un cuadrado es igual en ambos ejes
+	// Eliminamos px del tamaño y multiplicamos por 1 para convertir a numero
+	let increase = cube.style.width.replace('px', '') * 1 - 10;
+	// Comprobando solo un lado sirve al ser un cuadrado.
+	if (increase> 20) { // Tiene en cuenta que si es mejor de 20 px no podemos reudicr mas porque seria el tamaño menos de 10
+		cube.style.width = increase + "px";
+		cube.style.height = increase + "px";
+	}
+}
 function randomColor(cube) {
 	let r = Math.floor((Math.random() * 256));
 	let g = Math.floor((Math.random() * 256));
@@ -109,14 +165,14 @@ function addAction(action) {
 		this.style.backgroundColor = "white";
 		this.style.color = "black";
 	});
-	span.addEventListener('click', function(){
+	span.addEventListener('click', function () {
 		let index = acctions.findIndex((action) => {
 			console.log(action.span);
 			console.log(this);
 			return (action.span == this);
 		});
 		console.log(index);
-		acctions.splice(index,1);
+		acctions.splice(index, 1);
 		this.remove();
 	});
 	area.appendChild(span);
@@ -124,10 +180,12 @@ function addAction(action) {
 
 let mapActions = new Map([
 	["up", moveUp],
-	["down",moveDown],
-	["left",moveLeft],
-	["right",moveRight],
-	["color",randomColor]
+	["down", moveDown],
+	["left", moveLeft],
+	["right", moveRight],
+	["+", increase],
+	["-", reduce],
+	["color", randomColor]
 ])
 
 function executeAcctions() {
@@ -137,7 +195,7 @@ function executeAcctions() {
 		action.span.remove();
 		setTimeout(executeAcctions, 50);
 		console.log("retorno: ");
-	} else{
+	} else {
 		console.log("Fin de la recursividad");
 	}
 }
