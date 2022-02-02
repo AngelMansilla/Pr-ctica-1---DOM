@@ -3,6 +3,7 @@ let area;
 let cube;
 let cube1;
 let cube2;
+let cube3;
 let acctions = [];
 let mousePos;
 // Área para el proyecto
@@ -15,6 +16,9 @@ area.style.position = "relative";
 main.parentElement.insertBefore(area, main);
 let divInfo = document.createElement("div");
 main.parentElement.insertBefore(divInfo, main);
+main.parentElement.insertBefore(area, main);
+let divInfo2 = document.createElement("div");
+main.parentElement.insertBefore(divInfo2, main);
 
 // Añadir cuadno el cursor se mueve en el area
 area.addEventListener('mousemove', (event) => {
@@ -62,13 +66,30 @@ cube.style.left = "200px";
 area.appendChild(cube);
 // Contador para cada cuadrado
 let instance = 1;
+// Damos formato al div qeu guarda los cubos eliminados:
+
+divInfo2.style.display = "flex";
+divInfo2.style.flexWrap = "wrap";
+divInfo2.style.marginLeft = "10%";
+divInfo2.style.marginRight = "10%";
+
 // Al acer click llamamos a la funcion
 area.addEventListener("click", function (event) {
 	// En caso de ser un elemento con la classe cube borraremos si no es asi creamos el cubo
 	if (event.target.getAttribute("class") == "cube") {
 		// Comprobamos el id que tiene para proceder a borrar
-		cube2 = document.getElementById(event.target.getAttribute("id"));
+		let cubeId = event.target.getAttribute("id");
+		cube2 = document.getElementById(cubeId);
 		area.removeChild(cube2);
+		// Creamos un div para guardar los id de los cubos eliminados
+		cube3 = document.createElement("div");
+		cube3.innerHTML = ("id: " + cubeId);
+		cube3.style.border = "1px solid #d9d9d9";
+		cube3.style.width = "105px";
+		cube3.style.textAlign = "center";
+		cube3.style.margin = "auto";
+		cube3.style.marginTop = "10px";
+		divInfo2.appendChild(cube3);
 	} else {
 		// Creamos un cuadrado nuevo con sus caracteristicas
 		cube1 = document.createElement("div");
