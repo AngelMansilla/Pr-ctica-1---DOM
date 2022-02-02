@@ -2,6 +2,7 @@
 let area;
 let cube;
 let cube1;
+let cube2;
 let acctions = [];
 let mousePos;
 // Área para el proyecto
@@ -59,17 +60,35 @@ cube.style.top = "200px";
 cube.style.left = "200px";
 
 area.appendChild(cube);
-
-let instance = 0;
+// Contador para cada cuadrado
+let instance = 1;
+// Al acer click llamamos a la funcion
 area.addEventListener("click", function (event) {
-	cube1 = document.createElement("div");
-	cube1.style.background = cube.style.background;
-	cube1.style.width = "50px";
-	cube1.style.height = "50px";
-	cube1.style.position = "absolute";
-	cube1.style.top = mousePos.y + "px";
-	cube1.style.left = mousePos.x + "px";
-	area.appendChild(cube1);
+	// En caso de ser un elemento con la classe cube borraremos si no es asi creamos el cubo
+	if (event.target.getAttribute("class") == "cube") {
+		// Comprobamos el id que tiene para proceder a borrar
+		cube2 = document.getElementById(event.target.getAttribute("id"));
+		area.removeChild(cube2);
+	} else {
+		// Creamos un cuadrado nuevo con sus caracteristicas
+		cube1 = document.createElement("div");
+		cube1.id = "cube" + instance;
+		cube1.className = "cube";
+		cube1.innerHTML = instance++;
+		cube1.style.display = "flex";
+		cube1.style.alignItems = "center";
+		cube1.style.justifyContent = "center";
+		// Seleccionamos el color del cubo principal
+		cube1.style.background = cube.style.background;
+		cube1.style.width = "50px";
+		cube1.style.height = "50px";
+		cube1.style.position = "absolute";
+		// Seleccionamos la cordenada y para colocar el cuadrado
+		cube1.style.top = mousePos.y + "px";
+		// Seleccionamos la cordenada x para colocar el cuadrado
+		cube1.style.left = mousePos.x + "px";
+		area.appendChild(cube1);
+	}
 });
 
 
